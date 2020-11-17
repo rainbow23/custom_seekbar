@@ -1,13 +1,19 @@
 package cn.znh.rulerseebar;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import androidx.appcompat.widget.AppCompatSeekBar;
 import android.util.AttributeSet;
+import android.util.Log;
 
 /**
  * @author：zhaonh
@@ -25,17 +31,19 @@ public class RulerSeekBar extends AppCompatSeekBar {
     /**
      * 刻度线的个数,等分数等于刻度线的个数加1
      */
-    private int mRulerCount = 4;
+    private int mRulerCount = 3;
 
     /**
      * 每条刻度线的宽度
      */
-    private int mRulerWidth = 2;
+    private int mRulerWidth = 5;
 
     /**
      * 刻度线的颜色
      */
     private int mRulerColor = Color.WHITE;
+
+    Bitmap bmp;
 
     /**
      * 滑块上面是否要显示刻度线
@@ -44,18 +52,24 @@ public class RulerSeekBar extends AppCompatSeekBar {
 
     public RulerSeekBar(Context context) {
         super(context);
+        this.context = context;
         init();
     }
 
     public RulerSeekBar(Context context, AttributeSet attrs) {
         super(context, attrs);
+       this.context = context;
         init();
     }
 
     public RulerSeekBar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        this.context = context;
         init();
     }
+
+private Context context = null;
+private Drawable drawable = null;
 
     /**
      * 初始化
@@ -65,6 +79,32 @@ public class RulerSeekBar extends AppCompatSeekBar {
         mRulerPaint = new Paint();
         mRulerPaint.setColor(mRulerColor);
         mRulerPaint.setAntiAlias(true);
+
+        Resources resources = this.context.getResources();
+
+        if(resources == null) {
+            Log.d("main", "resources == null");
+        }else{
+            Log.d("main", "resources != null");
+
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inScaled = false;
+
+            bmp = BitmapFactory.decodeResource(resources, R.drawable.shape_progress_drawable, options);
+//            drawable = this.context.getDrawable(R.drawable.shape_thumb_icon);
+
+        }
+
+        if(bmp != null) {
+            Log.d("main", "bmp != null");
+        }else {
+            Log.d("main", "bmp == null");
+        }
+        if(drawable != null) {
+            Log.d("main", "drawable != null");
+        }else {
+            Log.d("main", "drawable == null");
+        }
 
         //Api21及以上调用，去掉滑块后面的背景
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -110,6 +150,16 @@ public class RulerSeekBar extends AppCompatSeekBar {
                 continue;
             }
 
+//    drawable.draw(canvas);
+
+//            Bitmap bmp = BitmapFactory.decodeResource(this.getContext().getResources(), R.drawable.shape_thumb_icon);
+//            if(bmp != null) {
+//                canvas.drawBitmap(bmp, 10, 10, mRulerPaint);
+//            }
+
+            canvas.drawCircle(200f,
+                    getThumb().getBounds().centerY(),
+                    (rulerBottom - rulerTop) * 0.7f, mRulerPaint);
             //进行绘制
             canvas.drawRect(rulerLeft, rulerTop, rulerRight, rulerBottom, mRulerPaint);
         }
