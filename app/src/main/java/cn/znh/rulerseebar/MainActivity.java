@@ -15,13 +15,20 @@ public class MainActivity extends AppCompatActivity {
 
 //        TestCanvasView testCanvasView = new TestCanvasView(this);
 
-
         mRulerSeekBar = findViewById(R.id.seek_bar);
 
-        //设置相关属性值
+        mRulerSeekBar.setPadding(0,0,0,0);
+
+        int max = 1234604;
+        int progressPos = max/2;
+        int dotPos = progressPos;
+
         mRulerSeekBar.setRulerCount(3);
         mRulerSeekBar.setRulerColor(Color.BLACK);
         mRulerSeekBar.setRulerWidth(5);
         mRulerSeekBar.setShowTopOfThumb(false);
+        mRulerSeekBar.setMax(max);
+        mRulerSeekBar.setProgress(progressPos);
+        mRulerSeekBar.setDot(dotPos);
     }
 }

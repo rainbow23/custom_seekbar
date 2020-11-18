@@ -95,6 +95,9 @@ private Drawable drawable = null;
 
         }
 
+
+
+
         if(bmp != null) {
             Log.d("main", "bmp != null");
         }else {
@@ -110,6 +113,11 @@ private Drawable drawable = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setSplitTrack(false);
         }
+    }
+
+    int mPosX = 0;
+    public void setDot(int posX) {
+        mPosX = posX;
     }
 
     /**
@@ -157,12 +165,33 @@ private Drawable drawable = null;
 //                canvas.drawBitmap(bmp, 10, 10, mRulerPaint);
 //            }
 
-            canvas.drawCircle(200f,
-                    getThumb().getBounds().centerY(),
-                    (rulerBottom - rulerTop) * 0.7f, mRulerPaint);
+//            canvas.drawCircle(200f,
+//                    getThumb().getBounds().centerY(),
+//                    (rulerBottom - rulerTop) * 0.7f, mRulerPaint);
             //进行绘制
             canvas.drawRect(rulerLeft, rulerTop, rulerRight, rulerBottom, mRulerPaint);
         }
+
+        final float width=getMeasuredWidth()-getPaddingLeft()-getPaddingRight();
+        final float step=width/(float)(getMax());
+
+        float thumbPositionX = width
+                * (float) getProgress()
+                / (float) getMax()
+                + (float) getPaddingLeft();
+
+        canvas.drawCircle(mPosX * step,
+                getThumb().getBounds().centerY(),
+                (rulerBottom - rulerTop) * 0.4f, mRulerPaint);
+        Log.d("Ruler",
+        "getMax() = " + getMax() +
+         "  getProgress() = " +  getProgress() +
+         "  width = " + width +
+         "  step = " + step +
+         "  thumbPositionX = " +  thumbPositionX
+
+        );
+
     }
 
     /**
