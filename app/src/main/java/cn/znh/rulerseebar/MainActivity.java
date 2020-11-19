@@ -22,26 +22,14 @@ public class MainActivity extends AppCompatActivity {
         mRulerSeekBar.setPadding(0,0,0,0);
 
         int max = 1234604;
-        max = 10000;
-//        max = 10;
+//        max = 1000;
+        max = 300;
 
         int unit =  max/4;
-
-        int progressPos = unit * 3;
-//        progressPos = 15;
-//        int dotPos = progressPos;
-//        dotPos = 1200;
+        Log.d("Ruler",  "unit = " + unit);
 
         mRulerSeekBar.setRulerColor(Color.BLACK);
         mRulerSeekBar.setMax(max);
-
-//        mRulerSeekBar.setProgress(unit * 2);
-//        Log.d("Ruler",  "setFirstProgress: ");
-//        mRulerSeekBar.putFirstDotXPositionFinished();
-//
-//        mRulerSeekBar.setProgress(unit * 4);
-//        Log.d("Ruler",  "setSecondProgress: ");
-//        mRulerSeekBar.putSecondDotXPositionFinished();
 
         int [] posXUnits = new int[3];
         posXUnits[0] = unit*1;

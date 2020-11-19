@@ -114,20 +114,13 @@ public class RulerSeekBar extends AppCompatSeekBar {
         currentProgressposX = currProgressposX;
     }
 
+    // thumbを移動させた場合、onDrawが呼び出される
     @Override
     protected synchronized void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        //2. 1.で保存されたthumbの位置にドットを描画する
-        for(int i=0;  i<dotXPos.length; i++) {
-            if(dotXPos[i] == 0) { continue; }
-            canvas.drawCircle(
-                    dotXPos[i],
-                    getThumb().getBounds().centerY(),
-                    mDotRadius,
-                    mRulerPaint);
-        }
 
         //1. activityからドット位置を受け取ったらthumbに設定する、thumbの位置が更新されるのでその値を配列に保存する
+        // 処理負荷が上がらないように一度だけ値を保存する
         for(int i=0;  i<receivedDotPosX.length; i++) {
             if(receivedDotPosX[i] == 0) { continue; }
             if(dotXPos[i] != 0) { continue; }
@@ -136,7 +129,19 @@ public class RulerSeekBar extends AppCompatSeekBar {
             dotXPos[i] = getThumb().getBounds().centerX();
         }
 
-        //一度だけ現在のthumbの位置を描画する
+        //2. 1.で保存されたthumbの位置にドットを描画する
+        // thumbを移動させた場合、描画される
+        for(int i=0;  i<dotXPos.length; i++) {
+            if(dotXPos[i] == 0) { continue; }
+            canvas.drawCircle(
+                    dotXPos[i],
+                    getThumb().getBounds().centerY(),
+                    mDotRadius,
+                    mRulerPaint);
+            Log.d("Ruler",  "thumb posX = " + dotXPos[i]);
+        }
+
+        //一度だけthumbの位置を描画する
         if(currentProgressposX != 0 && finishedPutOnThumbPositionX == false) {
             setProgress(currentProgressposX);
             finishedPutOnThumbPositionX = true;
