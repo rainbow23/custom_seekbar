@@ -9,33 +9,17 @@ import androidx.appcompat.widget.AppCompatSeekBar;
 import android.util.AttributeSet;
 import android.util.Log;
 
-/**
- * @author：zhaonh
- * @time 2018/8/25 18:32
- * <p>
- * 类描述：自定义带刻度线的SeekBar
- */
 public class RulerSeekBar extends AppCompatSeekBar {
-
-    /**
-     * 刻度线画笔
-     */
     private Paint mRulerPaint;
+    private int   mRulerColor = Color.WHITE;
+    private int   mDotRadius  = 20;
 
-    /**
-     * 刻度线的个数,等分数等于刻度线的个数加1
-     */
-    private int mRulerCount = 3;
+    private int     [] dotXPos            = new int[3];
+    private int     [] receivedDotPosX    = new int[3];
+    private boolean [] putDotPosXFinished = new boolean[3];
 
-    /**
-     * 每条刻度线的宽度
-     */
-    private int mRulerWidth = 5;
-
-    /**
-     * 刻度线的颜色
-     */
-    private int mRulerColor = Color.WHITE;
+    private int     currentProgressposX         = 0;
+    private boolean finishedPutOnThumbPositionX = false;
 
     public RulerSeekBar(Context context) {
         super(context);
@@ -53,12 +37,10 @@ public class RulerSeekBar extends AppCompatSeekBar {
     }
 
     private void init() {
-        //创建绘制刻度线的画笔
         mRulerPaint = new Paint();
         mRulerPaint.setColor(mRulerColor);
         mRulerPaint.setAntiAlias(true);
 
-        //Api21及以上调用，去掉滑块后面的背景
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setSplitTrack(false);
         }
@@ -75,31 +57,6 @@ public class RulerSeekBar extends AppCompatSeekBar {
         dotXPos[2] = 0;
     }
 
-    int mDotRadius = 20;
-    float mPosX = 0;
-    public void setDotPostX(float posX) {
-        mPosX = posX;
-    }
-
-    int mProgress = 0;
-
-//    @Override
-//    public synchronized void setProgress(int progress) {
-//        mProgress = progress;
-////        mReceivedDrawNotifyCount += 1;
-//    }
-
-    int [] dotXPos = new int[3];
-    int[] receivedDotPosX    = new int[3];
-    boolean [] putDotPosXFinished = new boolean[3];
-
-//    public void putFirstDotXPositionFinished() {
-//        receivedDotPosX[0] = true;
-//    }
-//
-//    public void putSecondDotXPositionFinished() {
-//        receivedDotPosX[1] = true;
-//    }
 
     public void putDotXPositionFinished(int[] posX) {
         for(int i=0; i<receivedDotPosX.length; i++) {
@@ -108,8 +65,7 @@ public class RulerSeekBar extends AppCompatSeekBar {
         }
     }
 
-    int currentProgressposX = 0;
-    boolean finishedPutOnThumbPositionX = false;
+
     public void setCurrentProgress(int currProgressposX) {
         currentProgressposX = currProgressposX;
     }
@@ -147,75 +103,9 @@ public class RulerSeekBar extends AppCompatSeekBar {
             finishedPutOnThumbPositionX = true;
             Log.d("Ruler",  "一度だけ現在のthumbの位置を描画する: thumb posX = " + getThumb().getBounds().centerX());
         }
-
-
-
-//
-//        if(receivedDotPosX[0] && putDotPosXFinished[0] == false) {
-//            dotXPos[0] = getThumb().getBounds().centerX();
-//            putDotPosXFinished[0] = true;
-//            Log.d("Ruler",  "setFirstDotX: dotXPos[0] = " + dotXPos[0]);
-//        }
-//
-//        if(receivedDotPosX[1] && putDotPosXFinished[1] == false) {
-//            dotXPos[1] = getThumb().getBounds().centerX();
-//            putDotPosXFinished[1] = true;
-//            Log.d("Ruler",  "setSecondDotX: dotXPos[1] = " + dotXPos[1]);
-//        }
-//
-//
-//        if(putDotPosXFinished[0]) {
-//            Log.d("Ruler",  "dwaw: dotXPos[0] = " + dotXPos[0]);
-//           canvas.drawCircle(
-//                   dotXPos[0],
-//                   getThumb().getBounds().centerY(),
-//                   mDotRadius,
-//                   mRulerPaint);
-//        }
-//
-//        if(putDotPosXFinished[1]) {
-//            Log.d("Ruler",  "dwaw: dotXPos[1] = " + dotXPos[1]);
-//            canvas.drawCircle(
-//                    dotXPos[1],
-//                    getThumb().getBounds().centerY(),
-//                    mDotRadius,
-//                    mRulerPaint);
-//        }
-
-//        Log.d("Ruler",
-//        "getMax() = " + getMax() +
-//         "  getMaxHeight() = " +  getMaxHeight() +
-//         "  getHeight() = " +  getHeight() +
-//         "  getProgress() = " +  getProgress() +
-//         "  width = " + width +
-//         "  step = " + step +
-//         "  thumbPositionX = " +  thumbPositionX
-
     }
 
     /**
-     * 设置刻度线的个数
-     *
-     * @param mRulerCount
-     */
-    public void setRulerCount(int mRulerCount) {
-        this.mRulerCount = mRulerCount;
-        requestLayout();
-    }
-
-    /**
-     * 设置刻度线的宽度，单位(px)
-     *
-     * @param mRulerWidth
-     */
-    public void setRulerWidth(int mRulerWidth) {
-        this.mRulerWidth = mRulerWidth;
-        requestLayout();
-    }
-
-    /**
-     * 设置刻度线的颜色
-     *
      * @param mRulerColor
      */
     public void setRulerColor(int mRulerColor) {
@@ -225,14 +115,4 @@ public class RulerSeekBar extends AppCompatSeekBar {
             requestLayout();
         }
     }
-
-    /**
-     * 滑块上面是否需要显示刻度线
-     *
-     * @param isShowTopOfThumb
-     */
-//    public void setShowTopOfThumb(boolean isShowTopOfThumb) {
-//        this.isShowTopOfThumb = isShowTopOfThumb;
-//        requestLayout();
-//    }
 }
