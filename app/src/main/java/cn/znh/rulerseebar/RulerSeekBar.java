@@ -45,18 +45,16 @@ public class RulerSeekBar extends AppCompatSeekBar {
             setSplitTrack(false);
         }
 
-        putDotPosXFinished[0] = false;
-        putDotPosXFinished[1] = false;
-        putDotPosXFinished[2] = false;
-
-        receivedDotPosX[0] = 0;
-        receivedDotPosX[1] = 0;
-        receivedDotPosX[2] = 0;
-        dotXPos[0] = 0;
-        dotXPos[1] = 0;
-        dotXPos[2] = 0;
+        for(int i=0; i<dotXPos.length; i++) {
+            dotXPos[i] = 0;
+        }
+        for(int i=0; i<receivedDotPosX.length; i++) {
+            receivedDotPosX[i] = 0;
+        }
+        for(int i=0; i<putDotPosXFinished.length; i++) {
+            putDotPosXFinished[i] = false;
+        }
     }
-
 
     public void putDotXPositionFinished(int[] posX) {
         for(int i=0; i<receivedDotPosX.length; i++) {
@@ -64,7 +62,6 @@ public class RulerSeekBar extends AppCompatSeekBar {
             Log.d("Ruler",  "putDotXPositionFinished: receivedDotPosX = " + receivedDotPosX[i] + " -----------------");
         }
     }
-
 
     public void setCurrentProgress(int currProgressposX) {
         currentProgressposX = currProgressposX;
@@ -79,9 +76,12 @@ public class RulerSeekBar extends AppCompatSeekBar {
         // 処理負荷が上がらないように一度だけ値を保存する
         for(int i=0;  i<receivedDotPosX.length; i++) {
             if(receivedDotPosX[i] == 0) { continue; }
-            if(dotXPos[i] != 0) { continue; }
+            if(dotXPos[i] != 0)         { continue; }
+
             setProgress(receivedDotPosX[i]);
             Log.d("Ruler",  "received thumb posX = " + getThumb().getBounds().centerX());
+
+            //↑setProgressでthumbの位置が更新されるので保存する
             dotXPos[i] = getThumb().getBounds().centerX();
         }
 
@@ -89,11 +89,13 @@ public class RulerSeekBar extends AppCompatSeekBar {
         // thumbを移動させた場合、描画される
         for(int i=0;  i<dotXPos.length; i++) {
             if(dotXPos[i] == 0) { continue; }
+
             canvas.drawCircle(
                     dotXPos[i],
                     getThumb().getBounds().centerY(),
                     mDotRadius,
-                    mRulerPaint);
+                    mRulerPaint
+            );
             Log.d("Ruler",  "thumb posX = " + dotXPos[i]);
         }
 
