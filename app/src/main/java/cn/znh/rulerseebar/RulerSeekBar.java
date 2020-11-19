@@ -63,12 +63,16 @@ public class RulerSeekBar extends AppCompatSeekBar {
             setSplitTrack(false);
         }
 
-        receivedDotPosX[0] = false;
-        receivedDotPosX[1] = false;
-        receivedDotPosX[2] = false;
         putDotPosXFinished[0] = false;
         putDotPosXFinished[1] = false;
         putDotPosXFinished[2] = false;
+
+        receivedDotPosX[0] = 0;
+        receivedDotPosX[1] = 0;
+        receivedDotPosX[2] = 0;
+        dotXPos[0] = 0;
+        dotXPos[1] = 0;
+        dotXPos[2] = 0;
     }
 
     int mDotRadius = 20;
@@ -86,51 +90,92 @@ public class RulerSeekBar extends AppCompatSeekBar {
 //    }
 
     int [] dotXPos = new int[3];
-    boolean [] receivedDotPosX    = new boolean[3];
+    int[] receivedDotPosX    = new int[3];
     boolean [] putDotPosXFinished = new boolean[3];
 
-    public void putFirstDotXPositionFinished() {
-        receivedDotPosX[0] = true;
+//    public void putFirstDotXPositionFinished() {
+//        receivedDotPosX[0] = true;
+//    }
+//
+//    public void putSecondDotXPositionFinished() {
+//        receivedDotPosX[1] = true;
+//    }
+
+    public void putDotXPositionFinished(int[] posX) {
+        for(int i=0; i<receivedDotPosX.length; i++) {
+            receivedDotPosX[i] = posX[i];
+            Log.d("Ruler",  "putDotXPositionFinished: receivedDotPosX = " + receivedDotPosX[i] + " -----------------");
+        }
     }
 
-    public void putSecondDotXPositionFinished() {
-        receivedDotPosX[1] = true;
+    int currentProgressposX = 0;
+    boolean finishedPutOnThumbPositionX = false;
+    public void setCurrentProgress(int currProgressposX) {
+        currentProgressposX = currProgressposX;
     }
 
     @Override
     protected synchronized void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        if(receivedDotPosX[0] && putDotPosXFinished[0] == false) {
-            dotXPos[0] = getThumb().getBounds().centerX();
-            putDotPosXFinished[0] = true;
-            Log.d("Ruler",  "setFirstDotX: dotXPos[0] = " + dotXPos[0]);
-        }
-
-        if(receivedDotPosX[1] && putDotPosXFinished[1] == false) {
-            dotXPos[1] = getThumb().getBounds().centerX();
-            putDotPosXFinished[1] = true;
-            Log.d("Ruler",  "setSecondDotX: dotXPos[1] = " + dotXPos[1]);
-        }
-
-
-        if(putDotPosXFinished[0]) {
-            Log.d("Ruler",  "dwaw: dotXPos[0] = " + dotXPos[0]);
-           canvas.drawCircle(
-                   dotXPos[0],
-                   getThumb().getBounds().centerY(),
-                   mDotRadius,
-                   mRulerPaint);
-        }
-
-        if(putDotPosXFinished[1]) {
-            Log.d("Ruler",  "dwaw: dotXPos[1] = " + dotXPos[1]);
+        //2. 1.で保存されたthumbの位置にドットを描画する
+        for(int i=0;  i<dotXPos.length; i++) {
+            if(dotXPos[i] == 0) { continue; }
             canvas.drawCircle(
-                    dotXPos[1],
+                    dotXPos[i],
                     getThumb().getBounds().centerY(),
                     mDotRadius,
                     mRulerPaint);
         }
+
+        //1. activityからドット位置を受け取ったらthumbに設定する、thumbの位置が更新されるのでその値を配列に保存する
+        for(int i=0;  i<receivedDotPosX.length; i++) {
+            if(receivedDotPosX[i] == 0) { continue; }
+            if(dotXPos[i] != 0) { continue; }
+            setProgress(receivedDotPosX[i]);
+            Log.d("Ruler",  "received thumb posX = " + getThumb().getBounds().centerX());
+            dotXPos[i] = getThumb().getBounds().centerX();
+        }
+
+        //一度だけ現在のthumbの位置を描画する
+        if(currentProgressposX != 0 && finishedPutOnThumbPositionX == false) {
+            setProgress(currentProgressposX);
+            finishedPutOnThumbPositionX = true;
+            Log.d("Ruler",  "一度だけ現在のthumbの位置を描画する: thumb posX = " + getThumb().getBounds().centerX());
+        }
+
+
+
+//
+//        if(receivedDotPosX[0] && putDotPosXFinished[0] == false) {
+//            dotXPos[0] = getThumb().getBounds().centerX();
+//            putDotPosXFinished[0] = true;
+//            Log.d("Ruler",  "setFirstDotX: dotXPos[0] = " + dotXPos[0]);
+//        }
+//
+//        if(receivedDotPosX[1] && putDotPosXFinished[1] == false) {
+//            dotXPos[1] = getThumb().getBounds().centerX();
+//            putDotPosXFinished[1] = true;
+//            Log.d("Ruler",  "setSecondDotX: dotXPos[1] = " + dotXPos[1]);
+//        }
+//
+//
+//        if(putDotPosXFinished[0]) {
+//            Log.d("Ruler",  "dwaw: dotXPos[0] = " + dotXPos[0]);
+//           canvas.drawCircle(
+//                   dotXPos[0],
+//                   getThumb().getBounds().centerY(),
+//                   mDotRadius,
+//                   mRulerPaint);
+//        }
+//
+//        if(putDotPosXFinished[1]) {
+//            Log.d("Ruler",  "dwaw: dotXPos[1] = " + dotXPos[1]);
+//            canvas.drawCircle(
+//                    dotXPos[1],
+//                    getThumb().getBounds().centerY(),
+//                    mDotRadius,
+//                    mRulerPaint);
+//        }
 
 //        Log.d("Ruler",
 //        "getMax() = " + getMax() +

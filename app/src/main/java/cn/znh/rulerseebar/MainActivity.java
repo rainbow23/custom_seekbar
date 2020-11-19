@@ -22,28 +22,33 @@ public class MainActivity extends AppCompatActivity {
         mRulerSeekBar.setPadding(0,0,0,0);
 
         int max = 1234604;
-        max = 60000;
+        max = 10000;
 //        max = 10;
 
-        int unit =  max/10;
+        int unit =  max/4;
 
         int progressPos = unit * 3;
 //        progressPos = 15;
 //        int dotPos = progressPos;
 //        dotPos = 1200;
 
-        mRulerSeekBar.setRulerCount(3);
         mRulerSeekBar.setRulerColor(Color.BLACK);
-        mRulerSeekBar.setRulerWidth(5);
-//        mRulerSeekBar.setShowTopOfThumb(false);
         mRulerSeekBar.setMax(max);
 
-        mRulerSeekBar.setProgress(unit * 2);
-        Log.d("Ruler",  "setFirstProgress: ");
-        mRulerSeekBar.putFirstDotXPositionFinished();
+//        mRulerSeekBar.setProgress(unit * 2);
+//        Log.d("Ruler",  "setFirstProgress: ");
+//        mRulerSeekBar.putFirstDotXPositionFinished();
+//
+//        mRulerSeekBar.setProgress(unit * 4);
+//        Log.d("Ruler",  "setSecondProgress: ");
+//        mRulerSeekBar.putSecondDotXPositionFinished();
 
-        mRulerSeekBar.setProgress(unit * 4);
-        Log.d("Ruler",  "setSecondProgress: ");
-        mRulerSeekBar.putSecondDotXPositionFinished();
+        int [] posXUnits = new int[3];
+        posXUnits[0] = unit*1;
+        posXUnits[1] = unit*2;
+        posXUnits[2] = unit*3;
+        mRulerSeekBar.putDotXPositionFinished(posXUnits);
+
+        mRulerSeekBar.setCurrentProgress(unit*1);
     }
 }
