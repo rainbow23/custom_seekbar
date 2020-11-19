@@ -62,6 +62,13 @@ public class RulerSeekBar extends AppCompatSeekBar {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setSplitTrack(false);
         }
+
+        receivedDotPosX[0] = false;
+        receivedDotPosX[1] = false;
+        receivedDotPosX[2] = false;
+        putDotPosXFinished[0] = false;
+        putDotPosXFinished[1] = false;
+        putDotPosXFinished[2] = false;
     }
 
     int mDotRadius = 20;
@@ -71,44 +78,58 @@ public class RulerSeekBar extends AppCompatSeekBar {
     }
 
     int mProgress = 0;
-//    int mReceivedDrawNotifyCount = 0;
+
+//    @Override
+//    public synchronized void setProgress(int progress) {
+//        mProgress = progress;
+////        mReceivedDrawNotifyCount += 1;
+//    }
+
     int [] dotXPos = new int[3];
+    boolean [] receivedDotPosX    = new boolean[3];
+    boolean [] putDotPosXFinished = new boolean[3];
+
+    public void putFirstDotXPositionFinished() {
+        receivedDotPosX[0] = true;
+    }
+
+    public void putSecondDotXPositionFinished() {
+        receivedDotPosX[1] = true;
+    }
 
     @Override
-    public synchronized void setProgress(int progress) {
-        mProgress = progress;
-//        mReceivedDrawNotifyCount += 1;
-    }
-
-    boolean putDotPosXFinished = false;
-    public void setdotxposfinished() {
-        putDotPosXFinished = true;
-    }
-
-        @Override
     protected synchronized void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if(putDotPosXFinished) {
-                dotXPos[0] = getThumb().getBounds().centerX();
-
-//            if(mReceivedDrawNotifyCount != 0 && mReceivedDrawNotifyCount <= 3) {
-//                dotXPos[mReceivedDrawNotifyCount - 1] = getThumb().getBounds().centerX();
-//            }
-            putDotPosXFinished = false;
+        if(receivedDotPosX[0] && putDotPosXFinished[0] == false) {
+            dotXPos[0] = getThumb().getBounds().centerX();
+            putDotPosXFinished[0] = true;
+            Log.d("Ruler",  "setFirstDotX: dotXPos[0] = " + dotXPos[0]);
         }
 
-        if(putDotPosXFinished == true) { return; }
+        if(receivedDotPosX[1] && putDotPosXFinished[1] == false) {
+            dotXPos[1] = getThumb().getBounds().centerX();
+            putDotPosXFinished[1] = true;
+            Log.d("Ruler",  "setSecondDotX: dotXPos[1] = " + dotXPos[1]);
+        }
 
-        Log.d("Ruler",  "dotXPos.length = " + dotXPos.length);
-        if(dotXPos.length != 0) {
-//           for (int i = 0; i < dotXPos.length; i++){
-               canvas.drawCircle(
-                       dotXPos[0],
-                       getThumb().getBounds().centerY(),
-                       mDotRadius,
-                       mRulerPaint);
-//           }
+
+        if(putDotPosXFinished[0]) {
+            Log.d("Ruler",  "dwaw: dotXPos[0] = " + dotXPos[0]);
+           canvas.drawCircle(
+                   dotXPos[0],
+                   getThumb().getBounds().centerY(),
+                   mDotRadius,
+                   mRulerPaint);
+        }
+
+        if(putDotPosXFinished[1]) {
+            Log.d("Ruler",  "dwaw: dotXPos[1] = " + dotXPos[1]);
+            canvas.drawCircle(
+                    dotXPos[1],
+                    getThumb().getBounds().centerY(),
+                    mDotRadius,
+                    mRulerPaint);
         }
 
 //        Log.d("Ruler",

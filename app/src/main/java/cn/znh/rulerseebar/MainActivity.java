@@ -2,6 +2,8 @@ package cn.znh.rulerseebar;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -20,8 +22,12 @@ public class MainActivity extends AppCompatActivity {
         mRulerSeekBar.setPadding(0,0,0,0);
 
         int max = 1234604;
-        max = 30000;
-        int progressPos = max/4;
+        max = 60000;
+//        max = 10;
+
+        int unit =  max/10;
+
+        int progressPos = unit * 3;
 //        progressPos = 15;
 //        int dotPos = progressPos;
 //        dotPos = 1200;
@@ -31,9 +37,13 @@ public class MainActivity extends AppCompatActivity {
         mRulerSeekBar.setRulerWidth(5);
 //        mRulerSeekBar.setShowTopOfThumb(false);
         mRulerSeekBar.setMax(max);
-        mRulerSeekBar.setProgress(progressPos);
-        mRulerSeekBar.setdotxposfinished();
 
-//        mRulerSeekBar.setDotPostX((float)dotPos);
+        mRulerSeekBar.setProgress(unit * 2);
+        Log.d("Ruler",  "setFirstProgress: ");
+        mRulerSeekBar.putFirstDotXPositionFinished();
+
+        mRulerSeekBar.setProgress(unit * 4);
+        Log.d("Ruler",  "setSecondProgress: ");
+        mRulerSeekBar.putSecondDotXPositionFinished();
     }
 }
