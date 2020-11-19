@@ -115,8 +115,9 @@ private Drawable drawable = null;
         }
     }
 
-    int mPosX = 0;
-    public void setDot(int posX) {
+    int mDotRadius = 20;
+    float mPosX = 0;
+    public void setDotPostX(float posX) {
         mPosX = posX;
     }
 
@@ -180,11 +181,45 @@ private Drawable drawable = null;
                 / (float) getMax()
                 + (float) getPaddingLeft();
 
-        canvas.drawCircle(mPosX * step,
+        Log.d("Ruler",
+              "mPosX = " + mPosX +
+                    " mDotRadius = " + mDotRadius
+        );
+
+        float moveXSpace = (float)getMaxHeight() - (float)mDotRadius
+                * (float) getProgress()
+                / (float) getMax();
+
+        thumbPositionX += mDotRadius/2;
+        //radius = 半径
+        float halfPositionX = (float)getMax()/2;
+        if(mPosX < halfPositionX) {
+            float percentX = (halfPositionX - (float)mPosX) / halfPositionX;
+            float moveX   = percentX * moveXSpace; //ずらす値
+            mPosX         += moveX;
+
+            Log.d("Ruler",
+                    "halfPositionX = " + halfPositionX +
+                            " percentX = " + percentX +
+                            " moveXSpace = " + moveXSpace +
+                            " moveX = " + moveX);
+//            mPosX += mDotRadius;  //左位置をthumbと同じにする
+//            mPosX += getMaxHeight()/2;
+        }else{
+//            mPosX -= mDotRadius;  //右位置をthumbと同じにする
+//            mPosX -= getMaxHeight()/2;
+        }
+
+        //canvas.drawCircle(thumbPositionX,//mPosX * step,
+        canvas.drawCircle(
+                getThumb().getBounds().centerX(),
                 getThumb().getBounds().centerY(),
-                (rulerBottom - rulerTop) * 0.4f, mRulerPaint);
+                mDotRadius,
+                mRulerPaint);
         Log.d("Ruler",
         "getMax() = " + getMax() +
+         "  getMaxHeight() = " +  getMaxHeight() +
+         "  getHeight() = " +  getHeight() +
          "  getProgress() = " +  getProgress() +
          "  width = " + width +
          "  step = " + step +
