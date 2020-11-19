@@ -20,19 +20,20 @@ public class MainActivity extends AppCompatActivity {
         mRulerSeekBar.setPadding(0,0,0,0);
 
         int max = 1234604;
-        max = 300;
+        max = 30000;
         int progressPos = max/4;
 //        progressPos = 15;
-        int dotPos = progressPos;
+//        int dotPos = progressPos;
 //        dotPos = 1200;
 
         mRulerSeekBar.setRulerCount(3);
         mRulerSeekBar.setRulerColor(Color.BLACK);
         mRulerSeekBar.setRulerWidth(5);
-        mRulerSeekBar.setShowTopOfThumb(false);
+//        mRulerSeekBar.setShowTopOfThumb(false);
         mRulerSeekBar.setMax(max);
         mRulerSeekBar.setProgress(progressPos);
+        mRulerSeekBar.setdotxposfinished();
 
-        mRulerSeekBar.setDotPostX((float)dotPos);
+//        mRulerSeekBar.setDotPostX((float)dotPos);
     }
 }

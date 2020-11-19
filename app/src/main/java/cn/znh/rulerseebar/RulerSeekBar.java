@@ -1,15 +1,9 @@
 package cn.znh.rulerseebar;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import androidx.appcompat.widget.AppCompatSeekBar;
 import android.util.AttributeSet;
@@ -76,19 +70,47 @@ public class RulerSeekBar extends AppCompatSeekBar {
         mPosX = posX;
     }
 
+    int mProgress = 0;
+//    int mReceivedDrawNotifyCount = 0;
+    int [] dotXPos = new int[3];
+
     @Override
     public synchronized void setProgress(int progress) {
-
+        mProgress = progress;
+//        mReceivedDrawNotifyCount += 1;
     }
+
+    boolean putDotPosXFinished = false;
+    public void setdotxposfinished() {
+        putDotPosXFinished = true;
+    }
+
         @Override
     protected synchronized void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.drawCircle(
-                getThumb().getBounds().centerX(),
-                getThumb().getBounds().centerY(),
-                mDotRadius,
-                mRulerPaint);
+        if(putDotPosXFinished) {
+                dotXPos[0] = getThumb().getBounds().centerX();
+
+//            if(mReceivedDrawNotifyCount != 0 && mReceivedDrawNotifyCount <= 3) {
+//                dotXPos[mReceivedDrawNotifyCount - 1] = getThumb().getBounds().centerX();
+//            }
+            putDotPosXFinished = false;
+        }
+
+        if(putDotPosXFinished == true) { return; }
+
+        Log.d("Ruler",  "dotXPos.length = " + dotXPos.length);
+        if(dotXPos.length != 0) {
+//           for (int i = 0; i < dotXPos.length; i++){
+               canvas.drawCircle(
+                       dotXPos[0],
+                       getThumb().getBounds().centerY(),
+                       mDotRadius,
+                       mRulerPaint);
+//           }
+        }
+
 //        Log.d("Ruler",
 //        "getMax() = " + getMax() +
 //         "  getMaxHeight() = " +  getMaxHeight() +
@@ -97,8 +119,6 @@ public class RulerSeekBar extends AppCompatSeekBar {
 //         "  width = " + width +
 //         "  step = " + step +
 //         "  thumbPositionX = " +  thumbPositionX
-
-        );
 
     }
 
@@ -140,8 +160,8 @@ public class RulerSeekBar extends AppCompatSeekBar {
      *
      * @param isShowTopOfThumb
      */
-    public void setShowTopOfThumb(boolean isShowTopOfThumb) {
-        this.isShowTopOfThumb = isShowTopOfThumb;
-        requestLayout();
-    }
+//    public void setShowTopOfThumb(boolean isShowTopOfThumb) {
+//        this.isShowTopOfThumb = isShowTopOfThumb;
+//        requestLayout();
+//    }
 }
